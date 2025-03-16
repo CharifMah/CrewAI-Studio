@@ -7,7 +7,8 @@ RUN apt upgrade -y
 RUN pip install --upgrade pip
 # install git
 RUN apt-get install build-essential -y
-
+RUN pip install databricks
+RUN pip install databricks-sdk
 # Copy CrewAI-Studio
 RUN mkdir /CrewAI-Studio
 COPY ./ /CrewAI-Studio/

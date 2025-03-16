@@ -39,6 +39,17 @@ def restore_environment():
 def safe_pop_env_var(key):
     os.environ.pop(key, None)
 
+def create_ollama_llm(model, temperature):
+    host = st.session_state.env_vars["OLLAMA_HOST"]
+    if host:
+        switch_environment({
+            "OPENAI_API_KEY": "ollama",  # Nastaví OpenAI API klíč na "ollama"
+            "OPENAI_API_BASE": host,    # Nastaví OpenAI API Base na hodnotu OLLAMA_HOST
+        })
+        return LLM(model=model, temperature=temperature, base_url=host)
+    else:
+        raise ValueError("Ollama Host is not set in .env file")
+
 def create_openai_llm(model, temperature):
     switch_environment({
         "OPENAI_API_KEY": st.session_state.env_vars["OPENAI_API_KEY"],
@@ -78,17 +89,6 @@ def create_groq_llm(model, temperature):
         return ChatGroq(groq_api_key=api_key, model_name=model, temperature=temperature, max_tokens=4095)
     else:
         raise ValueError("Groq API key not set in .env file")
-
-def create_ollama_llm(model, temperature):
-    host = st.session_state.env_vars["OLLAMA_HOST"]
-    if host:
-        switch_environment({
-            "OPENAI_API_KEY": "ollama",  # Nastaví OpenAI API klíč na "ollama"
-            "OPENAI_API_BASE": host,    # Nastaví OpenAI API Base na hodnotu OLLAMA_HOST
-        })
-        return LLM(model=model, temperature=temperature, base_url=host)
-    else:
-        raise ValueError("Ollama Host is not set in .env file")
 
 
 def create_xai_llm(model, temperature):
